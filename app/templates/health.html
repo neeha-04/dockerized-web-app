@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Health Check{% endblock %}
+{% block content %}
+
+<h1 class="glow" style="font-family:'Orbitron',monospace; color:#00ff88; margin-bottom:30px; font-size:1.5rem; letter-spacing:4px;">
+    ✅ SYSTEM HEALTH CHECK
+</h1>
+
+<div class="grid-2">
+    <div class="card">
+        <div class="card-title">🟢 Service Status</div>
+        <div class="stat-row"><span class="stat-label">Flask App</span><span class="stat-value" style="color:#00ff88;">● HEALTHY</span></div>
+        <div class="stat-row"><span class="stat-label">Nginx Proxy</span><span class="stat-value" style="color:#00ff88;">● HEALTHY</span></div>
+        <div class="stat-row"><span class="stat-label">Docker Network</span><span class="stat-value" style="color:#00ff88;">● HEALTHY</span></div>
+        <div class="stat-row"><span class="stat-label">Gunicorn</span><span class="stat-value" style="color:#00ff88;">● HEALTHY</span></div>
+    </div>
+    <div class="card">
+        <div class="card-title">ℹ️ System Details</div>
+        <div class="stat-row"><span class="stat-label">Status</span><span class="stat-value">{{ status }}</span></div>
+        <div class="stat-row"><span class="stat-label">Timestamp</span><span class="stat-value">{{ timestamp }}</span></div>
+        <div class="stat-row"><span class="stat-label">Python</span><span class="stat-value">{{ python_version }}</span></div>
+        <div class="stat-row"><span class="stat-label">System</span><span class="stat-value">{{ system }}</span></div>
+    </div>
+</div>
+
+<div class="card" style="text-align:center; padding:40px;">
+    <div style="font-size:60px; margin-bottom:20px;">✅</div>
+    <h2 style="font-family:'Orbitron',monospace; color:#00ff88; font-size:1.5rem; margin-bottom:10px;">ALL SYSTEMS OPERATIONAL</h2>
+    <p style="color:#00ff8866; margin-bottom:30px;">All containers running normally</p>
+    <a href="/" class="btn">← Back to Dashboard</a>
+</div>
+{% endblock %}

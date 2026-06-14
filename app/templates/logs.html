@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block title %}Live Logs{% endblock %}
+{% block content %}
+
+<h1 class="glow" style="font-family:'Orbitron',monospace; color:#00d4ff; margin-bottom:30px; font-size:1.5rem; letter-spacing:4px;">
+    💻 LIVE LOG TERMINAL
+</h1>
+
+<div class="card">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+        <div class="card-title" style="margin:0;">System Logs</div>
+        <div style="display:flex; gap:10px;">
+            <button class="btn" onclick="clearLogs()">Clear</button>
+            <button class="btn" onclick="togglePause()" id="pause-btn">Pause</button>
+        </div>
+    </div>
+    <div class="terminal" id="terminal"></div>
+</div>
+
+<div class="grid-3">
+    <div class="card" style="text-align:center;">
+        <div class="card-title">INFO</div>
+        <div style="font-size:2rem; color:#00d4ff;" id="count-info">0</div>
+    </div>
+    <div class="card" style="text-align:center;">
+        <div class="card-title">WARNINGS</div>
+        <div style="font-size:2rem; color:#ffaa00;" id="count-warn">0</div>
+    </div>
+    <div class="card" style="text-align:center;">
+        <div class="card-title">SUCCESS</div>
+        <div style="font-size:2rem; color:#00ff88;" id="count-success">0</div>
+    </div>
+</div>
+
+<script>
+let paused = false;
+let counts = {info: 0, warn: 0, success: 0};
+
+const logMessages = [
+    {type:'success', msg:'Container flask_app started successfully'},
+    {type:'info', msg:'Nginx reverse proxy listening on port 80'},
+    {type:'info', msg:'Gunicorn worker booted with PID: ' + Math.floor(Math.random()*9999)},
+    {type:'success', msg:'Flask application initialized'},
+    {type:'info', msg:'Blueprint "main" registered'},
+    {type:'warn', msg:'Memory usage above 50% threshold'},
+    {type:'success', msg:'Health check passed — status: healthy'},
+    {type:'info', msg:'GET / HTTP/1.1 200 OK'},
+    {type:'info', msg:'GET /stats HTTP/1.1 200 OK'},
+    {type:'success', msg:'Docker network bridge established'},
+    {type:'warn', msg:'CPU spike detected — 45% usage'},
+    {type:'info', msg:'Nginx worker process started'},
+    {type:'success', msg:'Database connection pool ready'},
+    {type:'info', msg:'Static files served from /app/static'},
+];
+
+function addLog(type, msg) {
+    const terminal = document.getElementById('terminal');
+    const time = new Date().toLocaleTimeString();
+    const div = document.createElement('div');
+    div.className = 'log-line log-' + type;
+    div.textContent = '[' + time + '] [' + type.toUpperCase() + '] ' + msg;
+    terminal.appendChild(div);
+    terminal.scrollTop = terminal.scrollHeight;
+    counts[type] = (counts[type] || 0) + 1;
+    if(type === 'info') document.getElementById('count-info').textContent = counts.info;
+    if(type === 'warn') document.getElementById('count-warn').textContent = counts.warn;
+    if(type === 'success') document.getElementById('count-success').textContent = counts.success;
+}
+
+function clearLogs() {
+    document.getElementById('terminal').innerHTML = '';
+    counts = {info:0, warn:0, success:0};
+    document.getElementById('count-info').textContent = 0;
+    document.getElementById('count-warn').textContent = 0;
+    document.getElementById('count-success').textContent = 0;
+}
+
+function togglePause() {
+    paused = !paused;
+    document.getElementById('pause-btn').textContent = paused ? 'Resume' : 'Pause';
+}
+
+// Initial logs
+logMessages.forEach((l,i) => setTimeout(() => addLog(l.type, l.msg), i * 300));
+
+// Live logs
+setInterval(() => {
+    if(!paused) {
+        const r = logMessages[Math.floor(Math.random() * logMessages.length)];
+        addLog(r.type, r.msg);
+    }
+}, 2000);
+</script>
+{% endblock %}

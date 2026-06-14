@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+{% block title %}Live Monitor{% endblock %}
+{% block content %}
+
+<div style="text-align:right; margin-bottom:15px;">
+    <a href="/api/export" class="btn" download>📥 Export Stats CSV</a>
+</div>
+
+<h1 class="glow" style="font-family:'Orbitron',monospace; color:var(--accent); margin-bottom:30px; font-size:1.5rem; letter-spacing:4px;">
+    📊 LIVE SYSTEM MONITOR
+</h1>
+
+<div class="grid-3" style="margin-bottom:20px;">
+    <div class="card" data-tooltip="Current CPU usage across all cores">
+        <div class="card-title">⚙️ CPU Usage</div>
+        <div style="font-size:3rem; color:var(--warn); margin:10px 0;" id="cpu-val">--%</div>
+        <div class="progress-bar"><div class="progress-fill" id="cpu-bar"></div></div>
+    </div>
+    <div class="card" data-tooltip="RAM currently in use by the container">
+        <div class="card-title">🧠 Memory</div>
+        <div style="font-size:3rem; color:var(--danger); margin:10px 0;" id="mem-val">--%</div>
+        <div class="progress-bar"><div class="progress-fill" id="mem-bar"></div></div>
+        <div style="font-size:0.75rem; color:var(--text-dim); margin-top:8px;" id="mem-detail">-- MB / -- MB</div>
+    </div>
+    <div class="card" data-tooltip="Disk space used on the container filesystem">
+        <div class="card-title">💾 Disk</div>
+        <div style="font-size:3rem; color:var(--text); margin:10px 0;" id="disk-val">--%</div>
+        <div class="progress-bar"><div class="progress-fill" id="disk-bar"></div></div>
+        <div style="font-size:0.75rem; color:var(--text-dim); margin-top:8px;" id="disk-detail">-- GB / -- GB</div>
+    </div>
+</div>
+
+<div class="grid-2" style="margin-bottom:20px;">
+    <div class="card">
+        <div class="card-title">📈 CPU History</div>
+        <canvas id="cpu-chart" height="120"></canvas>
+    </div>
+    <div class="card">
+        <div class="card-title">🧠 Memory History</div>
+        <canvas id="mem-chart" height="120"></canvas>
+    </div>
+</div>
+
+<div class="grid-2" style="margin-bottom:20px;">
+    <div class="card">
+        <div class="card-title">💾 Disk History</div>
+        <canvas id="disk-chart" height="120"></canvas>
+    </div>
+    <div class="card">
+        <div class="card-title">🟢 System Info</div>
+        <div class="stat-row" data-tooltip="Container health status">
+            <span class="stat-label">Status</span>
+            <span class="stat-value" style="color:var(--text);">● ONLINE</span>
+        </div>
+        <div class="stat-row"><span class="stat-label">Visits</span><span class="stat-value" id="visits">--</span></div>
+        <div class="stat-row"><span class="stat-label">Network In</span><span class="stat-value" id="net-in">--</span></div>
+        <div class="stat-row"><span class="stat-label">Network Out</span><span class="stat-value" id="net-out">--</span></div>
+        <div class="stat-row"><span class="stat-label">Last Updated</span><span class="stat-value" id="updated">--</span></div>
+        <div class="stat-row"><span class="stat-label">Refresh Rate</span><span class="stat-value">3 seconds</span></div>
+    </div>
+</div>
+
+<div class="card" style="margin-bottom:20px;">
+    <div class="card-title">🔬 Top Processes</div>
+    <table id="proc-table" style="width:100%; border-collapse:collapse; font-size:0.82rem;">
+        <thead>
+            <tr style="color:var(--accent); border-bottom:1px solid var(--border);">
+                <th style="padding:8px; text-align:left;">PID</th>
+                <th style="padding:8px; text-align:left;">NAME</th>
+                <th style="padding:8px; text-align:right;">CPU%</th>
+                <th style="padding:8px; text-align:right;">MEM%</th>
+                <th style="padding:8px; text-align:right;">STATUS</th>
+            </tr>
+        </thead>
+        <tbody id="proc-body" style="color:var(--text-dim);"></tbody>
+    </table>
+</div>
+
+<script>
+const cpuHist = [], memHist = [], diskHist = [];
+const maxPts = 20;
+
+function drawChart(canvasId, data, color) {
+    const canvas = document.getElementById(canvasId);
+    const ctx = canvas.getContext('2d');
+    const w = canvas.width = canvas.offsetWidth;
+    const h = canvas.height = 120;
+    ctx.clearRect(0,0,w,h);
+    if(data.length < 2) return;
+    ctx.beginPath();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2;
+    ctx.shadowBlur = 10;
+    ctx.shadowColor = color;
+    data.forEach((v,i) => {
+        const x = (i/(maxPts-1))*w;
+        const y = h-(v/100)*h;
+        i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+    });
+    ctx.stroke();
+    ctx.lineTo(w,h); ctx.lineTo(0,h); ctx.closePath();
+    ctx.fillStyle = color + '22';
+    ctx.fill();
+}
+
+function setBar(id, percent) {
+    const bar = document.getElementById(id);
+    bar.style.width = percent + '%';
+    bar.className = 'progress-fill' + (percent > 80 ? ' danger' : percent > 60 ? ' warn' : '');
+}
+
+function formatBytes(bytes) {
+    if(bytes > 1073741824) return (bytes/1073741824).toFixed(1) + ' GB';
+    return (bytes/1048576).toFixed(1) + ' MB';
+}
+
+function fetchStats() {
+    fetch('/api/stats')
+        .then(r => r.json())
+        .then(d => {
+            document.getElementById('cpu-val').textContent = d.cpu_percent + '%';
+            document.getElementById('mem-val').textContent = d.memory_percent + '%';
+            document.getElementById('disk-val').textContent = d.disk_percent + '%';
+            document.getElementById('mem-detail').textContent = d.memory_used_mb + ' MB / ' + d.memory_total_mb + ' MB';
+            document.getElementById('disk-detail').textContent = d.disk_used_gb + ' GB / ' + d.disk_total_gb + ' GB';
+            document.getElementById('visits').textContent = d.visit_count;
+            document.getElementById('net-in').textContent = formatBytes(d.net_bytes_recv);
+            document.getElementById('net-out').textContent = formatBytes(d.net_bytes_sent);
+            document.getElementById('updated').textContent = new Date().toLocaleTimeString();
+
+            setBar('cpu-bar', d.cpu_percent);
+            setBar('mem-bar', d.memory_percent);
+            setBar('disk-bar', d.disk_percent);
+
+            cpuHist.push(d.cpu_percent);
+            memHist.push(d.memory_percent);
+            diskHist.push(d.disk_percent);
+            if(cpuHist.length > maxPts) cpuHist.shift();
+            if(memHist.length > maxPts) memHist.shift();
+            if(diskHist.length > maxPts) diskHist.shift();
+
+            drawChart('cpu-chart', cpuHist, '#ffaa00');
+            drawChart('mem-chart', memHist, '#ff4444');
+            drawChart('disk-chart', diskHist, '#00ff88');
+
+            checkAlerts(d.cpu_percent, d.memory_percent);
+        });
+}
+fetchStats();
+setInterval(fetchStats, 3000);
+
+function fetchProcesses() {
+    fetch('/api/processes')
+        .then(r => r.json())
+        .then(data => {
+            const body = document.getElementById('proc-body');
+            body.innerHTML = data.map(p => `
+                <tr style="border-bottom:1px solid var(--border);">
+                    <td style="padding:8px; color:var(--text-dim);">${p.pid}</td>
+                    <td style="padding:8px; color:var(--text);">${p.name}</td>
+                    <td style="padding:8px; text-align:right; color:var(--warn);">${(p.cpu_percent||0).toFixed(1)}%</td>
+                    <td style="padding:8px; text-align:right; color:var(--accent);">${(p.memory_percent||0).toFixed(1)}%</td>
+                    <td style="padding:8px; text-align:right;">
+                        <span style="color:${p.status==='running'?'#00ff88':'var(--text-dim)'};">${p.status}</span>
+                    </td>
+                </tr>
+            `).join('');
+        });
+}
+fetchProcesses();
+setInterval(fetchProcesses, 5000);
+</script>
+
+{% endblock %}

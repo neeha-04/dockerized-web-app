@@ -1,0 +1,230 @@
+{% extends "base.html" %}
+{% block title %}DevOps Monitor — Home{% endblock %}
+{% block content %}
+
+<div style="text-align:center; padding: 40px 0 40px;">
+    <div style="font-size: 80px; margin-bottom: 20px; animation: float 3s ease-in-out infinite;">🐳</div>
+    <h1 class="glow" style="font-family:'Orbitron',monospace; font-size:3rem; color:var(--accent); margin-bottom:15px;">
+        DEVOPS MONITOR
+    </h1>
+    <p style="color:var(--text); font-size:1rem; max-width:600px; margin:0 auto 40px; letter-spacing:1px; opacity:0.8;">
+        Production-ready Flask app · Nginx Reverse Proxy · Docker Multi-Container
+    </p>
+    <div style="display:flex; gap:15px; justify-content:center; flex-wrap:wrap; margin-bottom:50px;">
+        <span class="badge-btn" onclick="showModal('python')" style="border-color:var(--accent); color:var(--accent);">🐍 PYTHON 3.11</span>
+        <span class="badge-btn" onclick="showModal('flask')" style="border-color:var(--text); color:var(--text);">⚡ FLASK</span>
+        <span class="badge-btn" onclick="showModal('nginx')" style="border-color:var(--danger); color:var(--danger);">🌐 NGINX</span>
+        <span class="badge-btn" onclick="showModal('docker')" style="border-color:var(--accent); color:var(--accent);">🐳 DOCKER</span>
+        <span class="badge-btn" onclick="showModal('gunicorn')" style="border-color:var(--warn); color:var(--warn);">⚙️ GUNICORN</span>
+    </div>
+</div>
+
+<!-- Modal -->
+<div id="modal-overlay" onclick="closeModal()" style="
+    display:none; position:fixed; top:0; left:0;
+    width:100%; height:100%; z-index:9998;
+    background:rgba(0,0,0,0.8); backdrop-filter:blur(5px);
+    align-items:center; justify-content:center;">
+    <div id="modal-box" onclick="event.stopPropagation()" style="
+        background:#0a0a0f; border:1px solid var(--accent);
+        border-radius:15px; padding:40px; max-width:500px;
+        width:90%; position:relative;
+        box-shadow: 0 0 40px rgba(0,212,255,0.2);
+        animation: popIn 0.3s ease;">
+        <button onclick="closeModal()" style="
+            position:absolute; top:15px; right:15px;
+            background:none; border:1px solid var(--danger);
+            color:var(--danger); padding:3px 10px;
+            cursor:pointer; font-family:'Share Tech Mono',monospace;
+            border-radius:4px;">✕</button>
+        <div id="modal-icon" style="font-size:50px; margin-bottom:15px;"></div>
+        <h2 id="modal-title" style="font-family:'Orbitron',monospace; color:var(--accent); margin-bottom:10px; font-size:1.2rem; letter-spacing:3px;"></h2>
+        <p id="modal-version" style="color:var(--warn); font-size:0.8rem; margin-bottom:20px; letter-spacing:2px;"></p>
+        <p id="modal-desc" style="color:var(--text-dim); line-height:1.8; font-size:0.9rem; margin-bottom:20px;"></p>
+        <div id="modal-use" style="background:rgba(0,255,136,0.05); border:1px solid var(--border); border-radius:8px; padding:15px;">
+            <div style="color:var(--accent); font-size:0.8rem; letter-spacing:2px; margin-bottom:10px;">USED IN THIS PROJECT FOR:</div>
+            <div id="modal-use-text" style="color:var(--text); font-size:0.85rem; line-height:1.8;"></div>
+        </div>
+    </div>
+</div>
+
+<div class="grid-4" style="margin-bottom:20px;">
+    <div class="card" style="text-align:center;" data-tooltip="Active Docker containers">
+        <div style="font-size:2rem; margin-bottom:10px;">📦</div>
+        <div class="card-title">Containers</div>
+        <div style="font-size:2.5rem; color:var(--text);" id="container-count">0</div>
+        <div style="font-size:0.75rem; color:var(--text-dim); margin-top:5px;">RUNNING</div>
+    </div>
+    <div class="card" style="text-align:center;" data-tooltip="Total page visits">
+        <div style="font-size:2rem; margin-bottom:10px;">👁️</div>
+        <div class="card-title">Visits</div>
+        <div style="font-size:2.5rem; color:var(--accent);" id="visit-count">0</div>
+        <div style="font-size:0.75rem; color:var(--text-dim); margin-top:5px;">TOTAL</div>
+    </div>
+    <div class="card" style="text-align:center;" data-tooltip="Current CPU usage percentage">
+        <div style="font-size:2rem; margin-bottom:10px;">⚙️</div>
+        <div class="card-title">CPU</div>
+        <div style="font-size:2.5rem; color:var(--warn);" id="cpu-home">0%</div>
+        <div style="font-size:0.75rem; color:var(--text-dim); margin-top:5px;">USAGE</div>
+    </div>
+    <div class="card" style="text-align:center;" data-tooltip="Current memory usage percentage">
+        <div style="font-size:2rem; margin-bottom:10px;">🧠</div>
+        <div class="card-title">Memory</div>
+        <div style="font-size:2.5rem; color:var(--danger);" id="mem-home">0%</div>
+        <div style="font-size:0.75rem; color:var(--text-dim); margin-top:5px;">USAGE</div>
+    </div>
+</div>
+
+<div class="grid-2" style="margin-bottom:20px;">
+    <div class="card">
+        <div class="card-title">🏗️ Architecture</div>
+        <div style="font-size:0.85rem; line-height:2.5; color:var(--text-dim);">
+            <div>🌐 Browser Request</div>
+            <div style="color:var(--accent);">&nbsp;&nbsp;└── Port 80 → Nginx Proxy</div>
+            <div style="color:var(--text);">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── Port 5000 → Flask App</div>
+            <div style="color:var(--warn);">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── Gunicorn Workers</div>
+            <div style="color:var(--danger);">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── Python Routes</div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-title">⚡ Quick Actions</div>
+        <div style="display:flex; flex-direction:column; gap:12px;">
+            <a href="/stats" class="btn">📊 Live Monitor</a>
+            <a href="/health" class="btn">✅ Health Check</a>
+            <a href="/info" class="btn">📖 About Project</a>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-title">📈 Live CPU Snapshot</div>
+    <canvas id="home-chart" height="80"></canvas>
+</div>
+
+<style>
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+.badge-btn {
+    padding: 8px 20px;
+    border: 1px solid;
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-family: 'Share Tech Mono', monospace;
+}
+.badge-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px currentColor;
+}
+@keyframes popIn {
+    from { transform: scale(0.8); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+</style>
+
+<script>
+const techInfo = {
+    python: {
+        icon: '🐍',
+        title: 'PYTHON 3.11',
+        version: 'VERSION 3.11.15',
+        desc: 'Python is a high-level programming language known for its clean syntax and readability. It powers everything from web apps to AI/ML systems.',
+        use: '✅ Core language for the web application\n✅ Handles all backend logic and routing\n✅ Processes real-time system metrics\n✅ Runs inside the Docker container'
+    },
+    flask: {
+        icon: '⚡',
+        title: 'FLASK 3.0',
+        version: 'VERSION 3.0.0',
+        desc: 'Flask is a lightweight Python web framework. It\'s minimal, flexible, and perfect for building REST APIs and web applications without unnecessary complexity.',
+        use: '✅ Serves all web pages and API endpoints\n✅ Blueprint architecture for clean routing\n✅ Renders HTML templates with Jinja2\n✅ Handles /health, /stats, /info routes'
+    },
+    nginx: {
+        icon: '🌐',
+        title: 'NGINX',
+        version: 'ALPINE LATEST',
+        desc: 'Nginx is a high-performance web server and reverse proxy. Used by 40% of the world\'s busiest websites including Netflix, Airbnb, and GitHub.',
+        use: '✅ Acts as reverse proxy on Port 80\n✅ Forwards requests to Flask on Port 5000\n✅ Handles SSL termination in production\n✅ Improves performance and security'
+    },
+    docker: {
+        icon: '🐳',
+        title: 'DOCKER',
+        version: 'VERSION 29.5.3',
+        desc: 'Docker is a containerization platform that packages applications with all dependencies into isolated containers. Solves the "works on my machine" problem forever.',
+        use: '✅ Containerizes the Flask application\n✅ Runs Nginx as a separate container\n✅ Docker Compose manages multi-container setup\n✅ Ensures consistent deployment anywhere'
+    },
+    gunicorn: {
+        icon: '⚙️',
+        title: 'GUNICORN',
+        version: 'VERSION 21.2.0',
+        desc: 'Gunicorn (Green Unicorn) is a Python WSGI HTTP server. It\'s a pre-fork worker model that handles multiple requests simultaneously in production.',
+        use: '✅ Production-grade WSGI server\n✅ Runs 2 worker processes for performance\n✅ Sits between Nginx and Flask app\n✅ Handles concurrent user requests'
+    }
+};
+
+function showModal(tech) {
+    const info = techInfo[tech];
+    document.getElementById('modal-icon').textContent = info.icon;
+    document.getElementById('modal-title').textContent = info.title;
+    document.getElementById('modal-version').textContent = info.version;
+    document.getElementById('modal-desc').textContent = info.desc;
+    document.getElementById('modal-use-text').innerHTML = info.use.replace(/\n/g, '<br>');
+    const overlay = document.getElementById('modal-overlay');
+    overlay.style.display = 'flex';
+}
+
+function closeModal() {
+    document.getElementById('modal-overlay').style.display = 'none';
+}
+
+document.addEventListener('keydown', e => {
+    if(e.key === 'Escape') closeModal();
+});
+
+const homeHistory = [];
+const maxPts = 30;
+
+function drawHomeChart(data) {
+    const canvas = document.getElementById('home-chart');
+    const ctx = canvas.getContext('2d');
+    const w = canvas.width = canvas.offsetWidth;
+    const h = canvas.height = 80;
+    ctx.clearRect(0,0,w,h);
+    if(data.length < 2) return;
+    ctx.beginPath();
+    ctx.strokeStyle = '#00d4ff';
+    ctx.lineWidth = 2;
+    ctx.shadowBlur = 10;
+    ctx.shadowColor = '#00d4ff';
+    data.forEach((v,i) => {
+        const x = (i/(maxPts-1))*w;
+        const y = h-(v/100)*h;
+        i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+    });
+    ctx.stroke();
+    ctx.lineTo(w,h); ctx.lineTo(0,h); ctx.closePath();
+    ctx.fillStyle = '#00d4ff11';
+    ctx.fill();
+}
+
+function fetchHomeStats() {
+    fetch('/api/stats')
+        .then(r => r.json())
+        .then(d => {
+            animateCounter(document.getElementById('container-count'), 2);
+            animateCounter(document.getElementById('visit-count'), d.visit_count);
+            document.getElementById('cpu-home').textContent = d.cpu_percent + '%';
+            document.getElementById('mem-home').textContent = d.memory_percent + '%';
+            homeHistory.push(d.cpu_percent);
+            if(homeHistory.length > maxPts) homeHistory.shift();
+            drawHomeChart(homeHistory);
+            checkAlerts(d.cpu_percent, d.memory_percent);
+        });
+}
+fetchHomeStats();
+setInterval(fetchHomeStats, 5000);
+</script>
+{% endblock %}

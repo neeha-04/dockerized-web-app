@@ -1,0 +1,412 @@
+{% extends "base.html" %}
+{% block title %}About — DevOps Monitor{% endblock %}
+{% block content %}
+
+<h1 class="glow" style="font-family:'Orbitron',monospace; color:var(--accent); margin-bottom:10px; font-size:1.5rem; letter-spacing:4px;">
+    📖 ABOUT THIS PROJECT
+</h1>
+<p style="color:var(--text-dim); margin-bottom:30px; font-size:0.85rem; letter-spacing:2px;">A complete guide to understanding this DevOps project</p>
+
+<!-- Project Overview -->
+<div class="card" style="margin-bottom:20px;">
+    <div class="card-title">🎯 Project Overview</div>
+    <p style="color:var(--text-dim); line-height:2; font-size:0.9rem;">
+        <span style="color:var(--accent);">DevOps Monitor</span> is a 
+        production-ready web application that gives you a 
+        <span style="color:var(--text);">real-time window into your system's health</span>. 
+        It tracks live CPU usage, memory consumption, disk space, and network activity — 
+        all visualized through an interactive dashboard that updates every few seconds.
+        <br><br>
+        Behind the scenes, the app runs inside 
+        <span style="color:var(--accent);">two Docker containers</span> — one serving the 
+        Python Flask application, and another running Nginx as a reverse proxy — 
+        connected through a private Docker network. This mirrors exactly how 
+        <span style="color:var(--warn);">real companies like Netflix, Uber and Airbnb</span> 
+        deploy their applications in production environments, ensuring 
+        <span style="color:var(--text);">portability, scalability, and reliability</span> 
+        across any server or cloud platform in the world.
+    </p>
+</div>
+
+<!-- Project Stats -->
+<div class="card" style="margin-bottom:20px;">
+    <div class="card-title">🚀 Project Highlights</div>
+    <div class="grid-2">
+        <div>
+            <div class="stat-row"><span class="stat-label">Application</span><span class="stat-value">DevOps Monitor</span></div>
+            <div class="stat-row"><span class="stat-label">Version</span><span class="stat-value">1.0.0</span></div>
+            <div class="stat-row"><span class="stat-label">Architecture</span><span class="stat-value">Multi-Container</span></div>
+            <div class="stat-row"><span class="stat-label">Containers</span><span class="stat-value">2 Running</span></div>
+        </div>
+        <div>
+            <div class="stat-row"><span class="stat-label">Deployment</span><span class="stat-value">Docker Compose</span></div>
+            <div class="stat-row"><span class="stat-label">Proxy</span><span class="stat-value">Nginx Reverse Proxy</span></div>
+            <div class="stat-row"><span class="stat-label">Refresh Rate</span><span class="stat-value">Every 3 Seconds</span></div>
+            <div class="stat-row"><span class="stat-label">Status</span><span class="stat-value" style="color:var(--text);">● Live</span></div>
+        </div>
+    </div>
+</div>
+
+<!-- Request Flow -->
+<div class="card" style="margin-bottom:20px;">
+    <div class="card-title">🔄 How a Request Travels</div>
+    <p style="color:var(--text-dim); font-size:0.85rem; margin-bottom:20px;">When you open this website, here's exactly what happens step by step:</p>
+    <div style="display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:10px; padding:20px 0;">
+        <div class="flow-step" id="step1">
+            <div style="font-size:2rem;">🧑‍💻</div>
+            <div style="color:var(--accent); font-size:0.75rem; margin-top:8px; letter-spacing:1px;">YOU</div>
+            <div style="color:var(--text-dim); font-size:0.7rem;">Open browser</div>
+        </div>
+        <div class="flow-arrow">──►</div>
+        <div class="flow-step" id="step2">
+            <div style="font-size:2rem;">🌐</div>
+            <div style="color:var(--danger); font-size:0.75rem; margin-top:8px; letter-spacing:1px;">NGINX</div>
+            <div style="color:var(--text-dim); font-size:0.7rem;">Port 80</div>
+        </div>
+        <div class="flow-arrow">──►</div>
+        <div class="flow-step" id="step3">
+            <div style="font-size:2rem;">⚙️</div>
+            <div style="color:var(--warn); font-size:0.75rem; margin-top:8px; letter-spacing:1px;">GUNICORN</div>
+            <div style="color:var(--text-dim); font-size:0.7rem;">Worker</div>
+        </div>
+        <div class="flow-arrow">──►</div>
+        <div class="flow-step" id="step4">
+            <div style="font-size:2rem;">⚡</div>
+            <div style="color:var(--text); font-size:0.75rem; margin-top:8px; letter-spacing:1px;">FLASK</div>
+            <div style="color:var(--text-dim); font-size:0.7rem;">Port 5000</div>
+        </div>
+        <div class="flow-arrow">──►</div>
+        <div class="flow-step" id="step5">
+            <div style="font-size:2rem;">📄</div>
+            <div style="color:var(--accent); font-size:0.75rem; margin-top:8px; letter-spacing:1px;">RESPONSE</div>
+            <div style="color:var(--text-dim); font-size:0.7rem;">HTML Page</div>
+        </div>
+    </div>
+    <div id="flow-explanation" style="text-align:center; color:var(--text-dim); font-size:0.85rem; margin-top:15px; min-height:30px; transition:all 0.3s;">
+        👆 Hover over each step to understand what it does
+    </div>
+</div>
+
+<!-- Tech Stack Details -->
+<div class="card" style="margin-bottom:20px;">
+    <div class="card-title">🛠️ Technology Deep Dive</div>
+
+    <!-- Tabs -->
+    <div style="display:flex; gap:10px; margin-bottom:25px; flex-wrap:wrap;">
+        <button class="tech-tab active" onclick="showTech('docker')">🐳 Docker</button>
+        <button class="tech-tab" onclick="showTech('nginx')">🌐 Nginx</button>
+        <button class="tech-tab" onclick="showTech('flask')">⚡ Flask</button>
+        <button class="tech-tab" onclick="showTech('gunicorn')">⚙️ Gunicorn</button>
+        <button class="tech-tab" onclick="showTech('python')">🐍 Python</button>
+    </div>
+
+    <!-- Docker -->
+    <div class="tech-content" id="tech-docker">
+        <div class="grid-2">
+            <div>
+                <h3 style="color:var(--accent); margin-bottom:15px; font-family:'Orbitron',monospace; font-size:0.9rem;">WHAT IS IT?</h3>
+                <p style="color:var(--text-dim); line-height:2; font-size:0.85rem;">
+                    Docker is a containerization platform. Think of it like a 
+                    <span style="color:var(--accent);">lunchbox 🍱</span> — you pack your food (app) with 
+                    everything it needs (libraries, settings) and it tastes exactly the same 
+                    whether you open it at home, office, or cloud server.
+                </p>
+                <h3 style="color:var(--accent); margin:15px 0; font-family:'Orbitron',monospace; font-size:0.9rem;">WHY USE IT?</h3>
+                <p style="color:var(--text-dim); line-height:2; font-size:0.85rem;">
+                    Without Docker, apps often break when moved between computers due to different 
+                    Python versions, missing libraries, or OS differences. Docker eliminates this 
+                    <span style="color:var(--warn);">"works on my machine"</span> problem forever.
+                </p>
+            </div>
+            <div>
+                <h3 style="color:var(--accent); margin-bottom:15px; font-family:'Orbitron',monospace; font-size:0.9rem;">HOW IT'S USED HERE</h3>
+                <div style="font-size:0.85rem; line-height:2;">
+                    <div style="color:var(--text);">✅ Flask app runs in Container 1</div>
+                    <div style="color:var(--text);">✅ Nginx runs in Container 2</div>
+                    <div style="color:var(--text);">✅ Both talk via Docker network</div>
+                    <div style="color:var(--text);">✅ Docker Compose manages both</div>
+                </div>
+                <h3 style="color:var(--accent); margin:15px 0; font-family:'Orbitron',monospace; font-size:0.9rem;">USED BY</h3>
+                <p style="color:var(--text-dim); font-size:0.85rem; line-height:2;">
+                    Netflix, Uber, Spotify, Amazon, Google — every major tech company uses Docker in production.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Nginx -->
+    <div class="tech-content" id="tech-nginx" style="display:none;">
+        <div class="grid-2">
+            <div>
+                <h3 style="color:var(--accent); margin-bottom:15px; font-family:'Orbitron',monospace; font-size:0.9rem;">WHAT IS IT?</h3>
+                <p style="color:var(--text-dim); line-height:2; font-size:0.85rem;">
+                    Nginx (pronounced "Engine-X") is a <span style="color:var(--accent);">reverse proxy</span> and web server. 
+                    Think of it like a <span style="color:var(--danger);">receptionist 🏢</span> — all visitors come to the 
+                    receptionist first, who then routes them to the right department (your Flask app).
+                </p>
+                <h3 style="color:var(--accent); margin:15px 0; font-family:'Orbitron',monospace; font-size:0.9rem;">WHY USE IT?</h3>
+                <p style="color:var(--text-dim); line-height:2; font-size:0.85rem;">
+                    Flask's built-in server isn't meant for production — it can handle only one request at a time. 
+                    Nginx handles thousands of simultaneous connections and passes them efficiently to Flask.
+                </p>
+            </div>
+            <div>
+                <h3 style="color:var(--accent); margin-bottom:15px; font-family:'Orbitron',monospace; font-size:0.9rem;">HOW IT'S USED HERE</h3>
+                <div style="font-size:0.85rem; line-height:2;">
+                    <div style="color:var(--text);">✅ Listens on Port 80 (standard HTTP)</div>
+                    <div style="color:var(--text);">✅ Forwards to Flask on Port 5000</div>
+                    <div style="color:var(--text);">✅ Adds security headers</div>
+                    <div style="color:var(--text);">✅ Handles concurrent connections</div>
+                </div>
+                <h3 style="color:var(--accent); margin:15px 0; font-family:'Orbitron',monospace; font-size:0.9rem;">USED BY</h3>
+                <p style="color:var(--text-dim); font-size:0.85rem; line-height:2;">
+                    Powers 34% of all websites worldwide including Airbnb, GitHub, Instagram and Netflix.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Flask -->
+    <div class="tech-content" id="tech-flask" style="display:none;">
+        <div class="grid-2">
+            <div>
+                <h3 style="color:var(--accent); margin-bottom:15px; font-family:'Orbitron',monospace; font-size:0.9rem;">WHAT IS IT?</h3>
+                <p style="color:var(--text-dim); line-height:2; font-size:0.85rem;">
+                    Flask is a lightweight Python <span style="color:var(--accent);">web framework</span>. 
+                    Think of it like a <span style="color:var(--text);">kitchen 🍳</span> — it gives you the 
+                    tools to cook (build) your web app, but lets you decide exactly what to make and how.
+                </p>
+                <h3 style="color:var(--accent); margin:15px 0; font-family:'Orbitron',monospace; font-size:0.9rem;">WHY USE IT?</h3>
+                <p style="color:var(--text-dim); line-height:2; font-size:0.85rem;">
+                    Flask is minimal, flexible and beginner-friendly. It doesn't force you into 
+                    specific patterns, making it perfect for APIs, dashboards, and microservices.
+                </p>
+            </div>
+            <div>
+                <h3 style="color:var(--accent); margin-bottom:15px; font-family:'Orbitron',monospace; font-size:0.9rem;">HOW IT'S USED HERE</h3>
+                <div style="font-size:0.85rem; line-height:2;">
+                    <div style="color:var(--text);">✅ Serves all HTML pages</div>
+                    <div style="color:var(--text);">✅ Provides REST API at /api/stats</div>
+                    <div style="color:var(--text);">✅ Blueprint architecture for clean code</div>
+                    <div style="color:var(--text);">✅ Jinja2 templates for dynamic HTML</div>
+                </div>
+                <h3 style="color:var(--accent); margin:15px 0; font-family:'Orbitron',monospace; font-size:0.9rem;">USED BY</h3>
+                <p style="color:var(--text-dim); font-size:0.85rem; line-height:2;">
+                    Pinterest, LinkedIn, Reddit and thousands of startups use Flask for their backends.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gunicorn -->
+    <div class="tech-content" id="tech-gunicorn" style="display:none;">
+        <div class="grid-2">
+            <div>
+                <h3 style="color:var(--accent); margin-bottom:15px; font-family:'Orbitron',monospace; font-size:0.9rem;">WHAT IS IT?</h3>
+                <p style="color:var(--text-dim); line-height:2; font-size:0.85rem;">
+                    Gunicorn (Green Unicorn) is a <span style="color:var(--accent);">WSGI server</span>. 
+                    Think of it like a <span style="color:var(--warn);">manager 👔</span> — it creates multiple 
+                    workers (employees) to handle many customer requests simultaneously so no one waits.
+                </p>
+                <h3 style="color:var(--accent); margin:15px 0; font-family:'Orbitron',monospace; font-size:0.9rem;">WHY USE IT?</h3>
+                <p style="color:var(--text-dim); line-height:2; font-size:0.85rem;">
+                    Flask's development server handles ONE request at a time. Gunicorn spawns multiple 
+                    worker processes, handling many requests in parallel — essential for production.
+                </p>
+            </div>
+            <div>
+                <h3 style="color:var(--accent); margin-bottom:15px; font-family:'Orbitron',monospace; font-size:0.9rem;">HOW IT'S USED HERE</h3>
+                <div style="font-size:0.85rem; line-height:2;">
+                    <div style="color:var(--text);">✅ Runs 2 worker processes</div>
+                    <div style="color:var(--text);">✅ Sits between Nginx and Flask</div>
+                    <div style="color:var(--text);">✅ Handles concurrent requests</div>
+                    <div style="color:var(--text);">✅ Auto-restarts crashed workers</div>
+                </div>
+                <h3 style="color:var(--accent); margin:15px 0; font-family:'Orbitron',monospace; font-size:0.9rem;">USED BY</h3>
+                <p style="color:var(--text-dim); font-size:0.85rem; line-height:2;">
+                    Standard production server for Python web apps worldwide alongside uWSGI.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Python -->
+    <div class="tech-content" id="tech-python" style="display:none;">
+        <div class="grid-2">
+            <div>
+                <h3 style="color:var(--accent); margin-bottom:15px; font-family:'Orbitron',monospace; font-size:0.9rem;">WHAT IS IT?</h3>
+                <p style="color:var(--text-dim); line-height:2; font-size:0.85rem;">
+                    Python is a <span style="color:var(--accent);">high-level programming language</span> known 
+                    for its clean, readable syntax. Think of it like <span style="color:var(--text);">English for computers 💬</span> 
+                    — easy to write, easy to read, powerful to execute.
+                </p>
+                <h3 style="color:var(--accent); margin:15px 0; font-family:'Orbitron',monospace; font-size:0.9rem;">WHY USE IT?</h3>
+                <p style="color:var(--text-dim); line-height:2; font-size:0.85rem;">
+                    Python has the largest ecosystem of libraries for web dev, AI/ML, automation, 
+                    and DevOps. It's the #1 language for backend development and data science.
+                </p>
+            </div>
+            <div>
+                <h3 style="color:var(--accent); margin-bottom:15px; font-family:'Orbitron',monospace; font-size:0.9rem;">HOW IT'S USED HERE</h3>
+                <div style="font-size:0.85rem; line-height:2;">
+                    <div style="color:var(--text);">✅ Core language for the entire app</div>
+                    <div style="color:var(--text);">✅ psutil library for system metrics</div>
+                    <div style="color:var(--text);">✅ datetime for timestamps</div>
+                    <div style="color:var(--text);">✅ platform for system info</div>
+                </div>
+                <h3 style="color:var(--accent); margin:15px 0; font-family:'Orbitron',monospace; font-size:0.9rem;">USED BY</h3>
+                <p style="color:var(--text-dim); font-size:0.85rem; line-height:2;">
+                    Google, NASA, Instagram, Spotify, Dropbox — Python is the world's most popular language.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- API Endpoints -->
+<div class="card" style="margin-bottom:20px;">
+    <div class="card-title">🔌 API Endpoints Explained</div>
+    <div style="display:flex; flex-direction:column; gap:12px;">
+        <div class="endpoint-row">
+            <span class="method-get">GET</span>
+            <span class="endpoint-path">/</span>
+            <span class="endpoint-desc">Homepage — Main dashboard with live stats</span>
+        </div>
+        <div class="endpoint-row">
+            <span class="method-get">GET</span>
+            <span class="endpoint-path">/stats</span>
+            <span class="endpoint-desc">Monitor page — CPU, RAM, Disk graphs</span>
+        </div>
+        <div class="endpoint-row">
+            <span class="method-get">GET</span>
+            <span class="endpoint-path">/health</span>
+            <span class="endpoint-desc">Health check — All service status</span>
+        </div>
+        <div class="endpoint-row">
+            <span class="method-get">GET</span>
+            <span class="endpoint-path">/info</span>
+            <span class="endpoint-desc">About page — Project documentation</span>
+        </div>
+        <div class="endpoint-row">
+            <span class="method-api">API</span>
+            <span class="endpoint-path">/api/stats</span>
+            <span class="endpoint-desc">JSON data — Raw metrics for the dashboard</span>
+        </div>
+    </div>
+</div>
+
+<div style="text-align:center; margin-top:20px;">
+    <a href="/" class="btn">← Back to Dashboard</a>
+    <a href="/stats" class="btn" style="margin-left:10px;">📊 Live Monitor</a>
+</div>
+
+<style>
+.tech-tab {
+    padding: 8px 20px;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    cursor: pointer;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    border-radius: 4px;
+    transition: all 0.3s;
+}
+.tech-tab:hover, .tech-tab.active {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(0,212,255,0.05);
+}
+.flow-step {
+    text-align: center;
+    padding: 15px 20px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+    min-width: 90px;
+}
+.flow-step:hover {
+    border-color: var(--accent);
+    background: rgba(0,212,255,0.05);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,212,255,0.1);
+}
+.flow-arrow {
+    color: var(--text-dim);
+    font-size: 1.2rem;
+    align-self: center;
+}
+.endpoint-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    transition: all 0.3s;
+}
+.endpoint-row:hover {
+    border-color: var(--accent);
+    background: rgba(0,212,255,0.03);
+}
+.method-get {
+    background: rgba(0,212,255,0.15);
+    color: var(--accent);
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    min-width: 50px;
+    text-align: center;
+}
+.method-api {
+    background: rgba(0,255,136,0.15);
+    color: var(--text);
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    min-width: 50px;
+    text-align: center;
+}
+.endpoint-path {
+    color: var(--warn);
+    font-size: 0.9rem;
+    min-width: 120px;
+}
+.endpoint-desc {
+    color: var(--text-dim);
+    font-size: 0.85rem;
+}
+</style>
+
+<script>
+function showTech(tech) {
+    document.querySelectorAll('.tech-content').forEach(el => el.style.display = 'none');
+    document.querySelectorAll('.tech-tab').forEach(el => el.classList.remove('active'));
+    document.getElementById('tech-' + tech).style.display = 'block';
+    event.target.classList.add('active');
+}
+
+const flowExplanations = {
+    step1: '🧑‍💻 YOU — Open your browser and type localhost. Your request is sent over the network.',
+    step2: '🌐 NGINX — Receives your request on Port 80. Acts as a reverse proxy and forwards it securely.',
+    step3: '⚙️ GUNICORN — The WSGI server picks up the request and assigns it to an available worker process.',
+    step4: '⚡ FLASK — Your Python code runs, collects data, and builds the HTML response.',
+    step5: '📄 RESPONSE — The completed HTML page travels back through the same path to your browser!'
+};
+
+Object.keys(flowExplanations).forEach(id => {
+    document.getElementById(id).addEventListener('mouseenter', () => {
+        document.getElementById('flow-explanation').textContent = flowExplanations[id];
+        document.getElementById('flow-explanation').style.color = 'var(--accent)';
+    });
+    document.getElementById(id).addEventListener('mouseleave', () => {
+        document.getElementById('flow-explanation').textContent = '👆 Hover over each step to understand what it does';
+        document.getElementById('flow-explanation').style.color = 'var(--text-dim)';
+    });
+});
+</script>
+{% endblock %}

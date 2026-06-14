@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}DevOps Dashboard{% endblock %}</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
+
+        :root[data-theme="dark"] {
+            --bg: #0a0a0f;
+            --bg2: rgba(0,255,136,0.03);
+            --border: #00ff8822;
+            --border-hover: #00ff8844;
+            --text: #00ff88;
+            --text-dim: #00ff8888;
+            --accent: #00d4ff;
+            --warn: #ffaa00;
+            --danger: #ff4444;
+            --nav-bg: rgba(0,0,0,0.9);
+        }
+
+        :root[data-theme="light"] {
+            --bg: #f8faff;
+            --bg2: rgba(99,102,241,0.04);
+            --border: #6366f133;
+            --border-hover: #6366f166;
+            --text: #1e1b4b;
+            --text-dim: #6366f1aa;
+            --accent: #4f46e5;
+            --warn: #d97706;
+            --danger: #dc2626;
+            --nav-bg: rgba(248,250,255,0.97);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Share Tech Mono', monospace;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: all 0.3s;
+        }
+
+        /* Loading Screen */
+        #loader {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: #0a0a0f;
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s;
+        }
+
+        .loader-text {
+            font-family: 'Orbitron', monospace;
+            color: #00d4ff;
+            font-size: 1.5rem;
+            letter-spacing: 5px;
+            margin-bottom: 30px;
+            text-shadow: 0 0 20px #00d4ff;
+        }
+
+        .loader-bar {
+            width: 300px;
+            height: 3px;
+            background: #00ff8822;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .loader-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00d4ff, #00ff88);
+            animation: load 1.5s ease forwards;
+            box-shadow: 0 0 10px #00d4ff;
+        }
+
+        @keyframes load {
+            from { width: 0%; }
+            to { width: 100%; }
+        }
+
+        /* Particles */
+        #particles {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Navbar */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1000;
+            background: var(--nav-bg);
+            border-bottom: 1px solid var(--border);
+            padding: 12px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-logo {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.1rem;
+            color: var(--accent);
+            text-shadow: 0 0 20px var(--accent);
+            text-decoration: none;
+        }
+
+        .nav-links { display: flex; gap: 20px; }
+
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: all 0.3s;
+            padding: 5px 10px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--accent);
+            border-color: var(--accent);
+            text-shadow: 0 0 10px var(--accent);
+            background: rgba(0,212,255,0.05);
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        /* Clock */
+        #nav-clock {
+            font-size: 0.85rem;
+            color: var(--accent);
+            letter-spacing: 2px;
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 5px 12px;
+            cursor: pointer;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.8rem;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .nav-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+        }
+
+        .status-dot {
+            width: 8px; height: 8px;
+            background: #00ff88;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+            box-shadow: 0 0 10px #00ff88;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+        }
+
+        /* Alert Banner */
+        #alert-banner {
+            position: fixed;
+            top: 60px; left: 0; right: 0;
+            z-index: 999;
+            background: #ff444422;
+            border-bottom: 1px solid #ff4444;
+            color: #ff4444;
+            text-align: center;
+            padding: 10px;
+            font-size: 0.85rem;
+            display: none;
+            animation: flash 1s infinite;
+        }
+
+        @keyframes flash {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        /* Main Content */
+        .main-content {
+            position: relative;
+            z-index: 1;
+            padding: 100px 30px 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 3px; height: 100%;
+            background: linear-gradient(180deg, var(--accent), var(--text));
+        }
+
+        .card:hover {
+            border-color: var(--border-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0,255,136,0.1);
+        }
+
+        /* Tooltip */
+        [data-tooltip] {
+            position: relative;
+            cursor: help;
+        }
+
+        [data-tooltip]::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #000;
+            color: var(--accent);
+            border: 1px solid var(--accent);
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            z-index: 100;
+        }
+
+        [data-tooltip]:hover::after { opacity: 1; }
+
+        .card-title {
+            font-family: 'Orbitron', monospace;
+            color: var(--accent);
+            font-size: 0.9rem;
+            letter-spacing: 3px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+
+        @media (max-width: 768px) {
+            .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+            .nav-links { display: none; }
+            .main-content { padding: 80px 15px 15px; }
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.85rem;
+        }
+        .stat-row:last-child { border-bottom: none; }
+        .stat-label { color: var(--text-dim); }
+        .stat-value { color: var(--accent); font-weight: bold; }
+
+        .progress-bar {
+            background: rgba(0,255,136,0.1);
+            border-radius: 3px;
+            height: 6px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            border-radius: 3px;
+            background: linear-gradient(90deg, var(--accent), var(--text));
+            width: 0%;
+            transition: width 1s ease;
+            box-shadow: 0 0 10px var(--accent);
+        }
+
+        .progress-fill.danger { background: linear-gradient(90deg, #ff4444, #ff8888); }
+        .progress-fill.warn { background: linear-gradient(90deg, #ffaa00, #ffcc44); }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 25px;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            text-decoration: none;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: all 0.3s;
+            background: transparent;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .btn:hover {
+            background: var(--accent);
+            color: #000;
+            box-shadow: 0 0 20px var(--accent);
+        }
+
+        .glow { text-shadow: 0 0 20px currentColor; }
+
+        /* Animated counter */
+        .counter { transition: all 0.5s; }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: repeating-linear-gradient(
+                0deg, transparent, transparent 2px,
+                rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px
+            );
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        /* Page transition */
+        .main-content {
+            animation: fadeIn 0.5s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Loading Screen -->
+<div id="loader">
+    <div class="loader-text">DEVOPS//MONITOR</div>
+    <div class="loader-bar"><div class="loader-fill"></div></div>
+    <div style="margin-top:15px; color:#00ff8866; font-size:0.8rem; letter-spacing:3px;">INITIALIZING SYSTEMS...</div>
+</div>
+
+<!-- Alert Banner -->
+<div id="alert-banner">⚠️ <span id="alert-msg">HIGH RESOURCE USAGE DETECTED</span></div>
+
+
+<canvas id="particles"></canvas>
+
+<nav>
+    <a href="/" class="nav-logo">🐳 DEVOPS//MONITOR</a>
+    <div class="nav-links">
+        <a href="/" class="{% if request.path == '/' %}active{% endif %}">Home</a>
+        <a href="/stats" class="{% if request.path == '/stats' %}active{% endif %}">Monitor</a>
+        <a href="/health" class="{% if request.path == '/health' %}active{% endif %}">Health</a>
+        <a href="/info" class="{% if request.path == '/info' %}active{% endif %}">About</a>
+    </div>
+    <div class="nav-right">
+        <div id="nav-clock">--:--:--</div>
+        <button class="theme-toggle" onclick="toggleTheme()">☀️ LIGHT</button>
+        <div class="nav-status">
+            <div class="status-dot"></div>
+            <span>ONLINE</span>
+        </div>
+    </div>
+</nav>
+
+<div class="main-content">
+    {% block content %}{% endblock %}
+</div>
+
+<script>
+// Restore saved theme
+(function() {
+    const saved = localStorage.getItem('theme');
+    if(saved) {
+        document.documentElement.setAttribute('data-theme', saved);
+        const btn = document.querySelector('.theme-toggle');
+        if(btn) btn.textContent = saved === 'light' ? '🌙 DARK' : '☀️ LIGHT';
+    }
+})();
+
+// Loading screen
+window.addEventListener('load', () => {
+    setTimeout(() => {
+        const loader = document.getElementById('loader');
+        loader.style.opacity = '0';
+        setTimeout(() => loader.style.display = 'none', 500);
+    }, 1800);
+});
+
+// Clock
+function updateClock() {
+    document.getElementById('nav-clock').textContent = new Date().toLocaleTimeString();
+}
+updateClock();
+setInterval(updateClock, 1000);
+
+// Theme toggle
+function toggleTheme() {
+    const html = document.documentElement;
+    const btn = document.querySelector('.theme-toggle');
+    if(html.getAttribute('data-theme') === 'dark') {
+        html.setAttribute('data-theme', 'light');
+        btn.textContent = '🌙 DARK';
+        localStorage.setItem('theme', 'light');
+    } else {
+        html.setAttribute('data-theme', 'dark');
+        btn.textContent = '☀️ LIGHT';
+        localStorage.setItem('theme', 'dark');
+    }
+}
+
+// Alert system
+function checkAlerts(cpu, mem) {
+    const banner = document.getElementById('alert-banner');
+    const msg = document.getElementById('alert-msg');
+    if(cpu > 80) {
+        msg.textContent = '⚠️ HIGH CPU USAGE: ' + cpu + '% — System under stress!';
+        banner.style.display = 'block';
+    } else if(mem > 90) {
+        msg.textContent = '⚠️ HIGH MEMORY USAGE: ' + mem + '% — Consider scaling!';
+        banner.style.display = 'block';
+    } else {
+        banner.style.display = 'none';
+    }
+}
+
+// Animated counter
+function animateCounter(el, target) {
+    const start = 0;
+    const duration = 1000;
+    const startTime = performance.now();
+    function update(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        el.textContent = Math.floor(progress * target);
+        if(progress < 1) requestAnimationFrame(update);
+        else el.textContent = target;
+    }
+    requestAnimationFrame(update);
+}
+
+// Particles
+const canvas = document.getElementById('particles');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const particles = [];
+for(let i = 0; i < 80; i++) {
+    particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: (Math.random() - 0.5) * 0.5,
+        size: Math.random() * 2,
+        opacity: Math.random() * 0.5
+    });
+}
+
+function animateParticles() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+        p.x += p.vx; p.y += p.vy;
+        if(p.x < 0 || p.x > canvas.width) p.vx *= -1;
+        if(p.y < 0 || p.y > canvas.height) p.vy *= -1;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(0, 212, 255, ${p.opacity})`;
+        ctx.fill();
+    });
+    particles.forEach((p1, i) => {
+        particles.slice(i+1).forEach(p2 => {
+            const dist = Math.hypot(p1.x-p2.x, p1.y-p2.y);
+            if(dist < 100) {
+                ctx.beginPath();
+                ctx.moveTo(p1.x, p1.y);
+                ctx.lineTo(p2.x, p2.y);
+                ctx.strokeStyle = `rgba(0, 212, 255, ${0.1*(1-dist/100)})`;
+                ctx.lineWidth = 0.5;
+                ctx.stroke();
+            }
+        });
+    });
+    requestAnimationFrame(animateParticles);
+}
+animateParticles();
+
+window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+});
+</script>
+
+{% block scripts %}{% endblock %}
+</body>
+</html>
