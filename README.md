@@ -1,10 +1,10 @@
 # 🐳 Dockerized Web Application
 
-> A Flask-based web application containerized using Docker and deployed with Docker Compose and Nginx Reverse Proxy.
+A Flask-based web application containerized using Docker and deployed with Docker Compose, Gunicorn, and Nginx Reverse Proxy. This project demonstrates modern DevOps practices including containerization, deployment, monitoring, and cloud hosting.
 
 ---
 
-## 📋 Internship Information
+# 📋 Internship Details
 
 | Field                 | Details                        |
 | --------------------- | ------------------------------ |
@@ -12,26 +12,43 @@
 | **Intern ID**         | CITS4308                       |
 | **Organization**      | CodTech IT Solutions Pvt. Ltd. |
 | **Domain**            | DevOps                         |
+| **Duration**          | 8 Weeks                        |
+| **Internship Period** | 10 June 2026 – 05 August 2026  |
 | **Project Title**     | Dockerized Web Application     |
 
 ---
 
-# 📖 Project Description
+# 🌐 Live Deployment
 
-This project demonstrates the deployment of a Flask web application using Docker containerization technology. The application is orchestrated using Docker Compose and served through an Nginx reverse proxy. The project follows modern DevOps practices and provides a production-ready environment for deploying web applications.
+### Live Demo
 
-The application includes monitoring features, health check endpoints, system information APIs, and statistics dashboards that help in tracking application performance and system resource utilization.
+https://dockerized-web-app-7q5e.onrender.com
+
+### Available Endpoints
+
+* Home Page: https://dockerized-web-app-7q5e.onrender.com/
+* Health Check: https://dockerized-web-app-7q5e.onrender.com/health
+* Application Information: https://dockerized-web-app-7q5e.onrender.com/info
+* Statistics Dashboard: https://dockerized-web-app-7q5e.onrender.com/stats
+
+---
+
+# 📖 Project Overview
+
+This project demonstrates how a Flask web application can be containerized using Docker and deployed in a production-ready environment. The application is served through Gunicorn and managed using Docker Compose while Nginx acts as a reverse proxy.
+
+The project provides monitoring capabilities such as health checks, system information, statistics dashboards, and API endpoints that allow users to observe application and system performance.
 
 ---
 
 # 🎯 Objectives
 
-* Containerize a Flask web application using Docker.
-* Implement Docker Compose for multi-container orchestration.
+* Containerize a web application using Docker.
+* Deploy services using Docker Compose.
 * Configure Nginx as a reverse proxy.
-* Deploy a production-ready web application using Gunicorn.
-* Monitor system performance and application health.
-* Learn industry-standard DevOps deployment practices.
+* Implement production deployment using Gunicorn.
+* Monitor application health and system statistics.
+* Learn modern DevOps deployment practices.
 
 ---
 
@@ -57,44 +74,40 @@ The application includes monitoring features, health check endpoints, system inf
 
 ✅ Environment Variable Configuration
 
-✅ Secure Non-Root Container Execution
+✅ Cloud Deployment on Render
 
 ---
 
-# 🏗️ Architecture
+# 🏗️ System Architecture
 
 ```text
-┌─────────────────┐
-│     Client      │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│      Nginx      │
-│  Reverse Proxy  │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│ Flask + Gunicorn│
-│   Application   │
-└─────────────────┘
+Client Browser
+       │
+       ▼
+   Nginx Proxy
+       │
+       ▼
+ Flask Application
+   (Gunicorn)
+       │
+       ▼
+ Monitoring APIs
 ```
 
 ---
 
 # 🛠️ Technologies Used
 
-| Technology     | Purpose               |
-| -------------- | --------------------- |
-| Python 3.11    | Backend Development   |
-| Flask          | Web Framework         |
-| Docker         | Containerization      |
-| Docker Compose | Service Orchestration |
-| Nginx          | Reverse Proxy         |
-| Gunicorn       | Production Server     |
-| HTML/CSS       | Frontend              |
-| psutil         | System Monitoring     |
+| Technology     | Purpose                 |
+| -------------- | ----------------------- |
+| Python 3       | Backend Development     |
+| Flask          | Web Framework           |
+| Docker         | Containerization        |
+| Docker Compose | Container Orchestration |
+| Gunicorn       | Production WSGI Server  |
+| Nginx          | Reverse Proxy           |
+| HTML/CSS       | Frontend Interface      |
+| psutil         | System Monitoring       |
 
 ---
 
@@ -117,34 +130,20 @@ dockerized-web-app/
 ├── run.py
 ├── .env
 ├── .dockerignore
-├── start.bat
-├── RUN_ME.bat
-└── README.md
+├── README.md
+└── start.bat
 ```
 
 ---
 
 # ⚙️ Installation and Setup
 
-## Prerequisites
-
-Before running the project, ensure the following software is installed:
-
-* Docker Desktop
-* Docker Compose
-* Git
-
----
-
 ## Clone Repository
 
 ```bash
-git clone https://github.com/your-username/dockerized-web-app.git
-
+git clone https://github.com/neeha-04/dockerized-web-app.git
 cd dockerized-web-app
 ```
-
----
 
 ## Build Docker Image
 
@@ -152,23 +151,17 @@ cd dockerized-web-app
 docker build -t dockerized-web-app .
 ```
 
----
-
 ## Run Using Docker Compose
 
 ```bash
 docker-compose up --build
 ```
 
----
-
 ## Run in Detached Mode
 
 ```bash
-docker-compose up -d --build
+docker-compose up -d
 ```
-
----
 
 ## Stop Containers
 
@@ -178,15 +171,7 @@ docker-compose down
 
 ---
 
-## View Running Containers
-
-```bash
-docker ps
-```
-
----
-
-# 🌐 Application Endpoints
+# 🌐 API Endpoints
 
 | Endpoint         | Description             |
 | ---------------- | ----------------------- |
@@ -195,108 +180,128 @@ docker ps
 | `/info`          | Application Information |
 | `/stats`         | Statistics Dashboard    |
 | `/api/health`    | Health API              |
-| `/api/stats`     | System Statistics API   |
+| `/api/stats`     | Statistics API          |
 | `/api/processes` | Running Processes API   |
-| `/api/export`    | Export Statistics CSV   |
+| `/api/export`    | Export CSV Data         |
 
 ---
 
 # 📊 Monitoring Features
 
-## Health Monitoring
+### Health Monitoring
 
 * Application Status
-* Docker Status
+* System Status
 * Python Version
 * Operating System Information
 
-## System Statistics
+### Statistics Dashboard
 
 * CPU Usage
 * Memory Usage
-* Disk Utilization
+* Disk Usage
 * Network Information
 
-## Process Monitoring
+### Process Monitoring
 
 * Running Processes
-* CPU Consumption
-* Memory Consumption
+* CPU Utilization
+* Memory Utilization
 * Process Status
 
 ---
 
 # 🔒 Security Features
 
-* Non-root Docker Containers
-* Nginx Reverse Proxy
+* Docker Container Isolation
+* Reverse Proxy Protection
 * Environment Variable Management
-* Gunicorn Production Server
-* Docker Network Isolation
+* Non-root Container Execution
+* Production-grade Gunicorn Deployment
 
 ---
 
 # 🐳 Docker Commands
 
-## Build Image
+### Build Image
 
 ```bash
 docker build -t dockerized-web-app .
 ```
 
-## Run Container
+### Run Container
 
 ```bash
 docker run -p 5000:5000 dockerized-web-app
 ```
 
-## List Containers
+### View Running Containers
 
 ```bash
 docker ps
 ```
 
-## Stop Container
+### Stop Container
 
 ```bash
 docker stop <container_id>
 ```
 
-## Remove Container
+### Remove Container
 
 ```bash
 docker rm <container_id>
 ```
 
-## Remove Image
+---
 
-```bash
-docker rmi dockerized-web-app
-```
+# 📸 Screenshots
 
+Add screenshots of:
+
+* Home Page
+* Health Check Page
+* Application Information Page
+* Statistics Dashboard
+* Docker Containers Running
+* Render Deployment
+
+---
 
 # 📚 Learning Outcomes
 
-Through this project, the following concepts were learned:
+Through this project, the following skills were developed:
 
 * Docker Fundamentals
-* Containerization Techniques
-* Docker Compose
-* Reverse Proxy Configuration
-* Nginx Administration
-* Production Deployment
-* Flask Application Deployment
-* DevOps Best Practices
-* Monitoring and Logging
+* Docker Compose Management
 * Container Networking
+* Nginx Configuration
+* Gunicorn Deployment
+* Flask Application Hosting
+* Monitoring and Logging
+* DevOps Best Practices
+* Cloud Deployment
+* Production Environment Configuration
 
 ---
 
 # ✅ Conclusion
 
-The Dockerized Web Application project successfully demonstrates the implementation of containerization using Docker and service orchestration using Docker Compose. By integrating Flask, Gunicorn, and Nginx, the project provides a scalable and production-ready deployment environment.
+The Dockerized Web Application project successfully demonstrates the deployment of a Flask application using Docker and related DevOps technologies. The project integrates containerization, reverse proxy configuration, monitoring, and cloud deployment to create a scalable and production-ready solution.
 
-This project helped in gaining hands-on experience with modern DevOps tools and practices including application deployment, container management, reverse proxy configuration, and system monitoring.
+This project provided valuable hands-on experience with modern DevOps tools and workflows, strengthening practical knowledge of application deployment and infrastructure management.
+
+---
+
+# 🔗 Project Links
+
+### GitHub Repository
+
+https://github.com/neeha-04/dockerized-web-app
+
+### Live Deployment
+
+https://dockerized-web-app-7q5e.onrender.com
 
 ---
 
@@ -313,4 +318,4 @@ CodTech IT Solutions Pvt. Ltd.
 
 ## ⭐ Acknowledgement
 
-This project was developed as part of the DevOps Internship Program offered by CodTech IT Solutions Pvt. Ltd. The internship provided practical exposure to modern DevOps tools, containerization technologies, deployment strategies, and industry best practices.
+This project was developed as part of the DevOps Internship Program offered by CodTech IT Solutions Pvt. Ltd. The internship provided practical exposure to Docker, container orchestration, deployment automation, monitoring, and modern DevOps practices.
