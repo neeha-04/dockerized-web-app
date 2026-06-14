@@ -12,8 +12,6 @@
 | **Intern ID**         | CITS4308                       |
 | **Organization**      | CodTech IT Solutions Pvt. Ltd. |
 | **Domain**            | DevOps                         |
-| **Duration**          | 8 Weeks                        |
-| **Internship Period** | 10 June 2026 – 05 August 2026  |
 | **Project Title**     | Dockerized Web Application     |
 
 ---
