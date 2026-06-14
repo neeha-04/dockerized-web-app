@@ -309,8 +309,6 @@ CodTech IT Solutions Pvt. Ltd.
 
 **Intern ID:** CITS4308
 
-**Internship Duration:** 10 June 2026 – 05 August 2026
-
 ---
 
 ## ⭐ Acknowledgement
