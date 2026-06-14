@@ -12,8 +12,6 @@ A Flask-based web application containerized using Docker and deployed with Docke
 | **Intern ID**         | CITS4308                       |
 | **Organization**      | CodTech IT Solutions Pvt. Ltd. |
 | **Domain**            | DevOps                         |
-| **Duration**          | 8 Weeks                        |
-| **Internship Period** | 10 June 2026 – 05 August 2026  |
 | **Project Title**     | Dockerized Web Application     |
 
 ---
@@ -252,19 +250,6 @@ docker stop <container_id>
 ```bash
 docker rm <container_id>
 ```
-
----
-
-# 📸 Screenshots
-
-Add screenshots of:
-
-* Home Page
-* Health Check Page
-* Application Information Page
-* Statistics Dashboard
-* Docker Containers Running
-* Render Deployment
 
 ---
 
