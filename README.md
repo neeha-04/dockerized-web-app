@@ -274,29 +274,6 @@ docker rm <container_id>
 docker rmi dockerized-web-app
 ```
 
----
-
-# 📸 Project Screenshots
-
-Add screenshots here:
-
-### Home Page
-
-![Home Page](screenshots/home.png)
-
-### Health Check
-
-![Health](screenshots/health.png)
-
-### Statistics Dashboard
-
-![Stats](screenshots/stats.png)
-
-### Docker Containers
-
-![Docker](screenshots/docker.png)
-
----
 
 # 📚 Learning Outcomes
 
